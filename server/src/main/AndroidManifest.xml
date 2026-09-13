@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Normal install-time permissions; deliberately absent from the tool
+         plugin's allowlist, so they live here in the unscanned library (the
+         Trixnity-in-chats seam). Merged into the tool APK. -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+
+    <application>
+
+        <!-- Wires the SDK server settings + cert check at app start, before
+             the tool's first binder call (the tasks pattern). -->
+        <provider
+            android:name=".ServerBootstrapProvider"
+            android:authorities="com.lightphone.wifi.server.bootstrap"
+            android:exported="false" />
+
+        <!-- Captive-portal sign-in. Not exported: launched only via
+             startServerActivity from the tool's own screens. -->
+        <activity
+            android:name=".PortalActivity"
+            android:exported="false"
+            android:theme="@android:style/Theme.Material.NoActionBar" />
+
+        <!-- AOSP runtime-permission host for the SDK permission flow (the
+             scanner requests CAMERA through it; see WifiPermissionActivity).
+             Translucent so the system dialog is the only thing visible. -->
+        <activity
+            android:name=".WifiPermissionActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+    </application>
+
+</manifest>

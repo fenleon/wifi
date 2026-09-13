@@ -1,0 +1,34 @@
+# Android
+.gradle/
+.kotlin/
+**/build/
+local.properties
+keystore.properties
+*.jks
+*.keystore
+
+# IntelliJ / Android Studio
+.idea/
+*.iml
+
+# macOS
+.DS_Store
+
+# Misc
+captures/
+.externalNativeBuild/
+.cxx/
+.DS_Store
+**/.DS_Store
+
+# Agent instructions (kept local, not published)
+AGENTS.md
+
+# Internal planning docs (kept local, not published)
+SPEC.md
+CALDAV.md
+
+# Stale dev captures from before the first release (reminders era) — not published
+screenshots/final-*.png
+screenshots/phase3-*.png
+screenshots/phase4-*.png

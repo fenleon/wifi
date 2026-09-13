@@ -1,0 +1,16 @@
+[tool]
+id = "com.lightphone.wifi"
+label = "Wifi"
+versionCode = 1
+versionName = "0.1.0"
+# Single-APK build: the merged :server library hosts the SDK server wiring and
+# the portal-login Activity; the tool binds to itself — serverPackage is the
+# tool's own id, so no separate companion APK to install.
+permissions = [
+    "android.permission.INTERNET",
+    "android.permission.ACCESS_NETWORK_STATE",
+    "android.permission.CAMERA",
+    "android.permission.ACCESS_FINE_LOCATION",
+]
+serverPackage = "com.lightphone.wifi"
+orientation = "portrait"
