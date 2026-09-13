@@ -6,13 +6,12 @@ This tool fills those gaps.
 
 ## What it does
 
-- **Scan a QR to connect.** Share the Wi-Fi QR from any phone (Android and iOS
-  both have it) and scan it here. The network joins — no typing passwords.
+- **Scan a QR to connect.**
 - **Portal sign-in.** Some networks (hotels, cafés, work) make you sign in on
   a web page before the internet works. LightOS never shows that page. This
   tool detects it and opens the sign-in page for you.
 - **Manual entry.** Type the network name, pick the security (None, WPA, WPA2,
-  WPA3), and enter the password — for networks you can't scan a QR for.
+  WPA3), and enter the password.
 
 ## Install
 
@@ -26,7 +25,7 @@ set **External tools** to **All tools** (the app is not Light-signed).
   location permission. This is an Android rule for all apps — nearby network
   names can reveal where you are.
 - Networks joined through this tool are remembered by the tool, not by
-  LightOS settings. To remove one, tap the network and use **Forget Network**.
+  LightOS settings. To remove one, they have to be disconnected through this tool. This is a restriction of how Android provisions Wifi connections.
 - Enterprise (EAP) and old WEP networks are not supported.
 
 ## Building
