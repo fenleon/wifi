@@ -28,7 +28,8 @@ import com.thelightphone.sdk.ui.lightClickable
 /**
  * The connected network's detail panel (the native "Forget Network" panel):
  * title = the network name, "Sign in to Network" when the network sits behind
- * a captive portal (opens the portal screen), "Forget Network" below —
+ * a captive portal (opens the native sign-in screen, SPEC §2b — the WebView
+ * portal survives as that screen's WEB PAGE fallback), "Forget Network" below —
  * withdrawing the suggestion, the only removal path for suggestion-joined
  * networks (LP3 Settings' forget is a no-op for them). Forget pops back;
  * Home shows the radio state, not the connection.
@@ -65,10 +66,7 @@ class NetworkDetailScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .lightClickable {
-                                    startServerActivity(
-                                        "com.lightphone.wifi/com.lightphone.wifi.server.PortalActivity",
-                                    )
-                                    goBack()
+                                    navigateTo(screenFactory = { PortalSignInScreen(it) })
                                 }
                                 .padding(horizontal = 1f.gridUnitsAsDp(), vertical = 0.75f.gridUnitsAsDp()),
                         )

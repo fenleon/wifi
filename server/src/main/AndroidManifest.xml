@@ -7,7 +7,10 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
 
-    <application>
+    <!-- Cleartext is the portal reality: probe URLs and portal pages are
+         plain HTTP. Required for the probe (HttpURLConnection) and the
+         WebView alike. -->
+    <application android:usesCleartextTraffic="true">
 
         <!-- Wires the SDK server settings + cert check at app start, before
              the tool's first binder call (the tasks pattern). -->

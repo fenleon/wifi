@@ -32,6 +32,7 @@ class ServerBootstrapProvider : ContentProvider() {
         val context = context?.applicationContext ?: return false
 
         WifiConnector.init(context)
+        PortalSignIn.init(context)
 
         with(LightSdkServer) {
             defaultClientFilterLevel = ClientFilterLevel.AllowLightSignedApks

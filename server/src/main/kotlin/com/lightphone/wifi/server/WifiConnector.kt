@@ -207,7 +207,12 @@ object WifiConnector {
             ?.networkSuggestions?.any { it.ssid == ssid } == true
     }.getOrDefault(false)
 
-    /** The connected network's SSID, or null (quotes/<unknown> stripped). */
+    /**
+     * The connected network's SSID, or null. The platform redacts SSID reads
+     * (`"<unknown ssid>"`) while the device location switch is off — do NOT
+     * fall back to [lastSsid] here: that is the network we last suggested,
+     * not necessarily the connected one.
+     */
     fun currentSsid(): String? {
         if (wifiNetwork == null) return null
         val wm = appContext?.getSystemService(WifiManager::class.java) ?: return null
@@ -215,9 +220,8 @@ object WifiConnector {
             wm.connectionInfo?.ssid
                 ?.removeSurrounding("\"")
                 ?.takeIf { it.isNotEmpty() && it != "<unknown ssid>" }
-                ?: lastSsid
         } catch (e: SecurityException) {
-            lastSsid
+            null
         }
     }
 
@@ -305,7 +309,7 @@ object WifiConnector {
     }
 
     private fun evaluate(network: Network, validated: Boolean) {
-        _connectedSsid.value = currentSsid() ?: lastSsid ?: _connectedSsid.value
+        _connectedSsid.value = currentSsid()
         if (validated) {
             awaitingJoin = false
             _pendingSsid.value = null

@@ -137,7 +137,14 @@ class HomeScreen(sealedActivity: SealedLightActivity) :
                 if (wifiEnabled) {
                     val portal = wifiState as? WifiConnector.State.Portal
                     val network = portal?.ssid ?: connectedSsid
-                    if (network != null && (wifiState is WifiConnector.State.Validated || portal != null)) {
+                    if (!locationOn) {
+                        // The platform redacts the connected SSID while the
+                        // location switch is off — show the fix, not a stale
+                        // network name.
+                        LocationPromptRow(
+                            onClick = { startServerActivity(LOCATION_SETTINGS) },
+                        )
+                    } else if (network != null && (wifiState is WifiConnector.State.Validated || portal != null)) {
                         NetworkRow(
                             ssid = network,
                             portal = portal != null,
@@ -150,40 +157,35 @@ class HomeScreen(sealedActivity: SealedLightActivity) :
                             },
                         )
                     }
-                    if (scans.isNotEmpty()) {
+                    if (locationOn && scans.isNotEmpty()) {
                         LightText(
                             text = "Other networks",
                             variant = LightTextVariant.Detail,
                             modifier = Modifier.padding(
-                                top = 2f.gridUnitsAsDp(),
+                                top = 1f.gridUnitsAsDp(),
                                 start = 2f.gridUnitsAsDp(),
                             ),
                         )
                     }
                     Box(modifier = Modifier.weight(1f)) {
                         LightScrollView {
-                            if (scanBlocked || !locationOn) {
+                            if (scanBlocked) {
                                 LightText(
-                                    text = if (!locationOn) "Enable Location to scan networks"
-                                    else "Allow location to scan networks",
+                                    text = "Allow location to scan networks",
                                     variant = LightTextVariant.Detail,
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .lightClickable {
-                                            if (!locationOn) {
-                                                startServerActivity(LOCATION_SETTINGS)
-                                            } else {
-                                                WifiPermissionActivity.defaultPermission =
-                                                    android.Manifest.permission.ACCESS_FINE_LOCATION
-                                                startServerActivity(
-                                                    "com.lightphone.wifi/" +
-                                                        "com.lightphone.wifi.server.WifiPermissionActivity",
-                                                )
-                                            }
+                                            WifiPermissionActivity.defaultPermission =
+                                                android.Manifest.permission.ACCESS_FINE_LOCATION
+                                            startServerActivity(
+                                                "com.lightphone.wifi/" +
+                                                    "com.lightphone.wifi.server.WifiPermissionActivity",
+                                            )
                                         }
                                         .padding(horizontal = 2f.gridUnitsAsDp(), vertical = 0.75f.gridUnitsAsDp()),
                                 )
-                            } else {
+                            } else if (locationOn) {
                                 scans
                                     .filter { it.ssid != network }
                                     .forEach { entry ->
@@ -211,7 +213,7 @@ class HomeScreen(sealedActivity: SealedLightActivity) :
                                                         )
                                                     }
                                                 }
-                                                .padding(horizontal = 2f.gridUnitsAsDp(), vertical = 0.75f.gridUnitsAsDp()),
+                                                .padding(horizontal = 2f.gridUnitsAsDp(), vertical = 0.5f.gridUnitsAsDp()),
                                         )
                                     }
                             }
@@ -283,6 +285,29 @@ private fun ToggleRow(enabled: Boolean, caption: String, onClick: () -> Unit) {
                 modifier = Modifier.padding(top = 2.dp),
             )
         }
+    }
+}
+
+/**
+ * The location-off prompt (the NetworkRow's slot): the platform redacts scan
+ * results AND the connected SSID while the location switch is off, so the row
+ * offers the fix instead of a possibly stale network name. Text button —
+ * native Settings grammar, no glyph, no toggle.
+ */
+@Composable
+private fun LocationPromptRow(onClick: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .lightClickable(onClick = onClick)
+            .padding(horizontal = 24.dp, vertical = 22.dp),
+    ) {
+        LightText(text = "Enable Location", variant = LightTextVariant.Heading)
+        LightText(
+            text = "to scan networks",
+            variant = LightTextVariant.Detail,
+            modifier = Modifier.padding(top = 2.dp),
+        )
     }
 }
 
