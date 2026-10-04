@@ -1,5 +1,10 @@
 # Wifi
 
+<p align="center"><a href="https://ko-fi.com/fenleon">
+  <picture><source media="(prefers-color-scheme: dark)" srcset="art/coffee-hand-filled-alpha-white-steam.png"><img src="art/coffee-hand-filled-alpha-white.png" alt="Hand holding Coffee" height="50" style="vertical-align: middle;"></picture>
+  <picture><source media="(prefers-color-scheme: dark)" srcset="art/buy-me-a-coffee-alpha-white.png"><img src="art/buy-me-a-coffee-alpha-black.png" alt="Buy Me A Coffee" height="40" style="vertical-align: middle;"></picture>
+  <img src="art/ok-hand-filled-alpha-white.png" alt="OK Hand" height="50" style="vertical-align: middle;"></a></p>
+
 A Wi-Fi tool for the Light Phone 3. LightOS can join networks, but it has no
 login pages for networks that need one, and no way to scan a QR to connect.
 This tool fills those gaps.
@@ -39,3 +44,5 @@ since this tool uses one of them (`exitTool`; see the light-phone workspace's
 git clone <patched light-sdk> ../light-sdk
 ./gradlew :app:assembleDebug   # APK at app/build/outputs/apk/debug/
 ```
+
+<p align="center">Support my work by leaving me a <a href="https://ko-fi.com/fenleon">tip</a> or <a href="https://github.com/sponsors/fenleon">sponsoring me</a>. A little goes a long way.</p>
