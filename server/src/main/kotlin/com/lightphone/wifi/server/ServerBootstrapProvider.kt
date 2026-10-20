@@ -2,15 +2,10 @@ package com.lightphone.wifi.server
 
 import android.content.ContentProvider
 import android.content.ContentValues
-import android.content.Context
-import android.content.pm.PackageManager
-import android.content.pm.Signature
 import android.database.Cursor
 import android.net.Uri
-import com.thelightphone.sdk.server.ClientCertType
 import com.thelightphone.sdk.server.ClientFilterLevel
 import com.thelightphone.sdk.server.LightSdkServer
-import java.security.MessageDigest
 
 // SHA-256 fingerprint of sdk/keys/lightsdk-dev.jks (alias: lightsdk-dev). Any
 // APK signed with the workspace dev key is treated as Light-SDK-signed.
@@ -37,7 +32,9 @@ class ServerBootstrapProvider : ContentProvider() {
         with(LightSdkServer) {
             defaultClientFilterLevel = ClientFilterLevel.AllowLightSignedApks
             provideSdkSettings = { RelaySdkServerSettings(it) }
-            checkCert = { callingPackage -> checkLightSdkCert(context, callingPackage) }
+            isLightSigned = { _, signatureHash ->
+                signatureHash.equals(LIGHTSDK_DEV_CERT_SHA256, ignoreCase = true)
+            }
             // Runtime permission flow: the scanner requests CAMERA through the
             // SDK flow; this APK hosts the AOSP dialog activity (the
             // ChatsPermissionActivity pattern) and narrows the grantable set.
@@ -60,31 +57,6 @@ class ServerBootstrapProvider : ContentProvider() {
         PlatformRelay.bind(context)
         return true
     }
-
-    private fun checkLightSdkCert(context: Context, callingPackage: String): ClientCertType {
-        val info = try {
-            context.packageManager.getPackageInfo(
-                callingPackage,
-                PackageManager.GET_SIGNING_CERTIFICATES,
-            )
-        } catch (e: PackageManager.NameNotFoundException) {
-            return ClientCertType.Unknown
-        }
-        val signingInfo = info.signingInfo ?: return ClientCertType.Unknown
-        val signers: Array<Signature> = if (signingInfo.hasMultipleSigners()) {
-            signingInfo.apkContentsSigners
-        } else {
-            signingInfo.signingCertificateHistory
-        }
-        val md = MessageDigest.getInstance("SHA-256")
-        val matches = signers.any { sig ->
-            md.digest(sig.toByteArray()).toHexString()
-                .equals(LIGHTSDK_DEV_CERT_SHA256, ignoreCase = true)
-        }
-        return if (matches) ClientCertType.LightSdkSignedUnverified else ClientCertType.Unknown
-    }
-
-    private fun ByteArray.toHexString(): String = joinToString("") { "%02X".format(it) }
 
     // The provider exists for its onCreate only; no content is served.
     override fun query(
