@@ -276,6 +276,12 @@ object WifiConnector {
             else -> {}
         }
         if (code.hidden) builder.setIsHiddenSsid(true)
+        // Open networks: only join while the tool is foregrounded. The
+        // platform auto-rejoins suggestions whenever in range, and an open
+        // network with a captive portal then fails validation and pops the
+        // sign-on overlay on every encounter, in the background. PSK keeps
+        // auto-join — a saved home network rejoining silently is the point.
+        if (code is WifiQrCode.Open) builder.setIsAppInteractionRequired(true)
         val suggestion = builder.build()
 
         val wm = appContext?.getSystemService(WifiManager::class.java) ?: return "Not ready"
