@@ -7,6 +7,26 @@ plugins {
     alias(libs.plugins.light.sdk)
 }
 
+val wifiR8Rules = File(layout.buildDirectory.asFile.get(), "wifi-r8.pro").apply {
+    parentFile.mkdirs()
+    writeText(
+        """
+        # Netty (via the SDK's ktor stack) references its optional tcnative
+        # TLS backend, JDK management/JFR APIs and log4j/BlockHound shims —
+        # none of which exist on Android or are loaded. R8's generated
+        # missing_rules.txt, folded in (the chats generated-proguard pattern;
+        # the Tool Library builder never sees a .pro at the tool root).
+        -dontwarn io.netty.internal.tcnative.**
+        -dontwarn java.lang.management.**
+        -dontwarn jdk.jfr.**
+        -dontwarn org.apache.log4j.**
+        -dontwarn org.apache.logging.log4j.**
+        -dontwarn reactor.blockhound.integration.BlockHoundIntegration
+        -dontwarn androidx.window.**
+        """.trimIndent() + "\n",
+    )
+}
+
 android {
     compileSdk = 36
 
@@ -39,6 +59,7 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             signingConfig = signingConfigs.getByName("lightsdkDev")
+            proguardFile(wifiR8Rules)
         }
     }
 
