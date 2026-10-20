@@ -22,10 +22,10 @@ dependencyResolutionManagement {
 
 rootProject.name = "wifi"
 
-include(":app")
+include(":tool")
 include(":server")
 
-// Tasks is a single-APK project (the audiobooks/chats pattern): `:app` is the
+// Tasks is a single-APK project (the audiobooks/chats pattern): `:tool` is the
 // real LightOS tool (lighttool.toml + the light-sdk tool plugin, LightScreen
 // UI, task repository in-process); `:server` is the merged companion as an
 // Android LIBRARY whose manifest contributes the SDK server wiring

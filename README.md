@@ -42,7 +42,7 @@ since this tool uses one of them (`exitTool`; see the light-phone workspace's
 
 ```sh
 git clone <patched light-sdk> ../light-sdk
-./gradlew :app:assembleDebug   # APK at app/build/outputs/apk/debug/
+./gradlew :tool:assembleDebug   # APK at tool/build/outputs/apk/debug/
 ```
 
 <p align="center">Support my work by leaving me a <a href="https://ko-fi.com/fenleon">tip</a> or <a href="https://github.com/sponsors/fenleon">sponsoring me</a>. A little goes a long way.</p>

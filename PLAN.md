@@ -4,7 +4,7 @@
 
 **Goal:** A LightOS tool (`com.lightphone.wifi`) that completes captive-portal sign-ins on the LP3 and joins WiFi networks by scanning the standard `WIFI:` QR.
 
-**Architecture:** Single APK (the tasks/audiobooks pattern): `:app` is the plugin-scanned tool (Light screens, SDK `LightBarcodeScanner`); `:server` is an unscanned Android library merged into the APK holding every `WifiManager`/`ConnectivityManager`/WebView API plus the portal-login Activity. Same process — the tool calls the `:server` facade directly, no IPC. Binds to itself (`serverPackage = com.lightphone.wifi`).
+**Architecture:** Single APK (the tasks/audiobooks pattern): `:tool` is the plugin-scanned tool (Light screens, SDK `LightBarcodeScanner`); `:server` is an unscanned Android library merged into the APK holding every `WifiManager`/`ConnectivityManager`/WebView API plus the portal-login Activity. Same process — the tool calls the `:server` facade directly, no IPC. Binds to itself (`serverPackage = com.lightphone.wifi`).
 
 **Tech stack:** Kotlin 2.3.20, AGP 8.12.3, Compose, Light SDK 0.1.0 (composite included build), ZXing via SDK `LightBarcodeScanner` (ML Kit/CameraX groups NOT excluded — unlike Tasks, we scan), kotlin-test + JUnit for `:server` unit tests.
 
@@ -13,8 +13,8 @@
 ## Global Constraints
 
 - **No Gradle builds, no unit-test runs, no `adb install` without the user's explicit per-instance permission** ("too many concurrent sessions"). Every gradle/adb step below is marked **[GATED]** — reach it, stop, ask.
-- Build only via `tools/build --dir wifi :app:assembleDebug` (RAM guard); never two builds at once.
-- `:app` module contains zero WifiManager/ConnectivityManager/WebView/Camera APIs (plugin ban) — all of it in `:server`.
+- Build only via `tools/build --dir wifi :tool:assembleDebug` (RAM guard); never two builds at once.
+- `:tool` module contains zero WifiManager/ConnectivityManager/WebView/Camera APIs (plugin ban) — all of it in `:server`.
 - Light design system only: `LightText` variants, `gridUnitsAsDp`, `LightBottomBar`, no custom colors.
 - minSdk 34, compileSdk 36, jvmTarget 17, signing = `../../light-sdk/sdk/keys/lightsdk-dev.jks`.
 - Privacy: never log SSIDs' passwords or portal credentials; no verbose logging.
